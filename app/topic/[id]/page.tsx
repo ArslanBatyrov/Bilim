@@ -5,5 +5,5 @@ export default function TopicPage({
 }: {
   params: { id: string }
 }) {
-  return <TopicClient subjectId={params.id} />
+  return <TopicClient topicId={params.id} />
 }

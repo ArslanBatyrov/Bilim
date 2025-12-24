@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getAllSubjects } from '@/lib/db'
 import type { Subject } from '@/lib/types'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SubjectsClient() {
+  const { t } = useLanguage()
   const [subjects, setSubjects] = useState<Subject[]>([])
 
   useEffect(() => {
@@ -20,14 +22,14 @@ export default function SubjectsClient() {
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <h1 className="text-5xl font-semibold text-apple-gray-900 mb-12 tracking-tight">
-          Предметы
+          {t.subjects.title}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {subjects.map((subject) => (
             <Link
               key={subject.id}
-              href={`/topic/${subject.id}`}
+              href={`/subject/${subject.id}`}
               className="bg-apple-gray-50 rounded-2xl p-6 border border-apple-gray-100 hover:bg-apple-gray-100 transition-colors"
             >
               <h2 className="text-xl font-semibold text-apple-gray-900 mb-2 tracking-tight">
@@ -44,7 +46,7 @@ export default function SubjectsClient() {
 
         {subjects.length === 0 && (
           <div className="bg-apple-gray-50 rounded-2xl p-12 text-center border border-apple-gray-100">
-            <p className="text-apple-gray-600">Предметы пока недоступны.</p>
+            <p className="text-apple-gray-600">{t.subjects.noSubjects}</p>
           </div>
         )}
       </div>

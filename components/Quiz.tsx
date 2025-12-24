@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Quiz, QuizQuestion } from '@/lib/types'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface QuizComponentProps {
   quiz: Quiz
@@ -9,6 +10,7 @@ interface QuizComponentProps {
 }
 
 export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
+  const { t } = useLanguage()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string | number>>({})
   const [showResults, setShowResults] = useState(false)
@@ -57,14 +59,14 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
     return (
       <div>
         <h2 className="text-2xl font-semibold text-apple-gray-900 mb-6 tracking-tight">
-          Результаты теста
+          {t.quiz.results}
         </h2>
         <div className="mb-8">
           <p className="text-4xl font-semibold text-apple-gray-900 mb-2">
             {score}%
           </p>
           <p className="text-sm text-apple-gray-600">
-            Вы получили {score >= 70 ? 'отличный' : score >= 50 ? 'хороший' : 'требует улучшения'} результат!
+            Siz {score >= 70 ? t.quiz.great : score >= 50 ? t.quiz.good : t.quiz.needsImprovement} {t.quiz.result}!
           </p>
         </div>
         <div className="space-y-3">
@@ -84,13 +86,13 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
                 }`}
               >
                 <p className="font-semibold text-apple-gray-900 mb-2 text-sm">
-                  Вопрос {idx + 1}: {q.question}
+                  {t.quiz.question} {idx + 1}: {q.question}
                 </p>
                 <p className="text-xs text-apple-gray-600 mb-1">
-                  Ваш ответ: {answer !== undefined ? String(answer) : 'Не отвечено'}
+                  {t.quiz.yourAnswer}: {answer !== undefined ? String(answer) : t.quiz.notAnswered}
                 </p>
                 <p className="text-xs text-apple-gray-600 mb-1">
-                  Правильный ответ: {String(q.correctAnswer)}
+                  {t.quiz.correctAnswer}: {String(q.correctAnswer)}
                 </p>
                 {q.explanation && (
                   <p className="text-xs text-apple-gray-700 mt-2 italic">
@@ -112,7 +114,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
       </h2>
       <div className="mb-6">
         <p className="text-xs text-apple-gray-600 mb-6">
-          Вопрос {currentQuestion + 1} из {quiz.questions.length}
+          {t.quiz.question} {currentQuestion + 1} / {quiz.questions.length}
         </p>
         <p className="text-base font-medium text-apple-gray-900 mb-6 leading-relaxed">
           {question.question}
@@ -140,7 +142,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
             value={answers[question.id] || ''}
             onChange={(e) => handleAnswer(Number(e.target.value))}
             className="w-full px-4 py-3 bg-white border border-apple-gray-200 rounded-xl focus:ring-2 focus:ring-apple-blue focus:border-apple-blue outline-none text-sm"
-            placeholder="Введите ваш ответ"
+            placeholder={t.quiz.enterAnswer}
           />
         )}
       </div>
@@ -150,7 +152,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
         disabled={answers[question.id] === undefined}
         className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {currentQuestion < quiz.questions.length - 1 ? 'Далее' : 'Завершить тест'}
+        {currentQuestion < quiz.questions.length - 1 ? t.quiz.next : t.quiz.submit}
       </button>
     </div>
   )

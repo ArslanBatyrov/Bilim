@@ -2,34 +2,35 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getTopicsBySubject, getSubjectById, getLessonsByTopic } from '@/lib/db'
+import { getTopicById, getSubjectById, getLessonsByTopic } from '@/lib/db'
 import type { Subject, Topic, Lesson } from '@/lib/types'
+import { useLanguage } from '@/contexts/LanguageContext'
 
-export default function TopicClient({ subjectId }: { subjectId: string }) {
+export default function TopicClient({ topicId }: { topicId: string }) {
+  const { t } = useLanguage()
+  const [topic, setTopic] = useState<Topic | null>(null)
   const [subject, setSubject] = useState<Subject | null>(null)
-  const [topics, setTopics] = useState<(Topic & { lessons: Lesson[] })[]>([])
+  const [lessons, setLessons] = useState<Lesson[]>([])
 
   useEffect(() => {
     async function loadData() {
-      const subj = await getSubjectById(subjectId)
-      setSubject(subj || null)
-      const tops = await getTopicsBySubject(subjectId)
-      const topicsWithLessons = await Promise.all(
-        tops.map(async (topic) => {
-          const lessons = await getLessonsByTopic(topic.id)
-          return { ...topic, lessons }
-        })
-      )
-      setTopics(topicsWithLessons)
+      const top = await getTopicById(topicId)
+      if (top) {
+        setTopic(top)
+        const subj = await getSubjectById(top.subjectId)
+        setSubject(subj || null)
+        const less = await getLessonsByTopic(topicId)
+        setLessons(less)
+      }
     }
     loadData()
-  }, [subjectId])
+  }, [topicId])
 
-  if (!subject) {
+  if (!topic) {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <p className="text-apple-gray-600">Предмет не найден</p>
+          <p className="text-apple-gray-600">{t.topic.notFound}</p>
         </div>
       </div>
     )
@@ -39,50 +40,40 @@ export default function TopicClient({ subjectId }: { subjectId: string }) {
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <Link
-          href="/subjects"
+          href={subject ? `/subject/${subject.id}` : '/subjects'}
           className="text-sm text-apple-blue hover:opacity-80 mb-6 inline-block font-medium"
         >
-          ← Назад к предметам
+          {t.topic.back}
         </Link>
-        <h1 className="text-5xl font-semibold text-apple-gray-900 mb-12 tracking-tight">
-          {subject.title}
+        <h1 className="text-5xl font-semibold text-apple-gray-900 mb-4 tracking-tight">
+          {topic.title}
         </h1>
+        {topic.description && (
+          <p className="text-lg text-apple-gray-600 mb-8">
+            {topic.description}
+          </p>
+        )}
 
-        <div className="space-y-6">
-          {topics.map((topic) => (
-            <div key={topic.id} className="bg-apple-gray-50 rounded-2xl p-6 border border-apple-gray-100">
-              <h2 className="text-2xl font-semibold text-apple-gray-900 mb-2 tracking-tight">
-                {topic.title}
-              </h2>
-              {topic.description && (
-                <p className="text-sm text-apple-gray-600 mb-6 leading-relaxed">
-                  {topic.description}
-                </p>
-              )}
-              <div className="space-y-2">
-                {topic.lessons.map((lesson) => (
-                  <Link
-                    key={lesson.id}
-                    href={`/lesson/${lesson.id}`}
-                    className="block p-4 bg-white rounded-xl border border-apple-gray-100 hover:bg-apple-gray-50 transition-colors"
-                  >
-                    <h3 className="font-semibold text-apple-gray-900 text-sm">
-                      {lesson.title}
-                    </h3>
-                  </Link>
-                ))}
-              </div>
-            </div>
+        <div className="space-y-3">
+          {lessons.map((lesson) => (
+            <Link
+              key={lesson.id}
+              href={`/lesson/${lesson.id}`}
+              className="block p-5 bg-apple-gray-50 rounded-xl border border-apple-gray-100 hover:bg-apple-gray-100 transition-colors"
+            >
+              <h3 className="font-semibold text-apple-gray-900 text-base">
+                {lesson.title}
+              </h3>
+            </Link>
           ))}
         </div>
 
-        {topics.length === 0 && (
+        {lessons.length === 0 && (
           <div className="bg-apple-gray-50 rounded-2xl p-12 text-center border border-apple-gray-100">
-            <p className="text-apple-gray-600">Темы пока недоступны.</p>
+            <p className="text-apple-gray-600">{t.topic.noTopics}</p>
           </div>
         )}
       </div>
     </div>
   )
 }
-

@@ -10,13 +10,11 @@ import {
 import type { Subject, Topic, Lesson, Quiz } from './types'
 
 export async function seedDemoContent(): Promise<void> {
-  // Check if "Основы математики" already exists (handle duplicates)
+  // Delete all existing subjects and their content
   const existingSubjects = await getAllSubjects()
-  const mathSubjects = existingSubjects.filter(s => s.title === 'Основы математики')
   
-  // Delete all existing "Mathematics Fundamentals" subjects and their content
-  for (const mathSubject of mathSubjects) {
-    const existingTopics = await db.topics.where('subjectId').equals(mathSubject.id).toArray()
+  for (const subject of existingSubjects) {
+    const existingTopics = await db.topics.where('subjectId').equals(subject.id).toArray()
     const topicIds = existingTopics.map(t => t.id)
     
     // Delete lessons and their quizzes
@@ -36,241 +34,134 @@ export async function seedDemoContent(): Promise<void> {
     }
     
     // Delete subject
-    await db.subjects.delete(mathSubject.id)
+    await db.subjects.delete(subject.id)
   }
 
-  // Subject
-  const subjectId = uuidv4()
-  await addSubject({
-    id: subjectId,
-    title: 'Основы математики',
-    description: 'Изучите основы математики, включая алгебру, геометрию и арифметику.',
-  })
-
-  // Topics
-  const topic1Id = uuidv4()
-  const topic2Id = uuidv4()
-
-  await addTopic({
-    id: topic1Id,
-    subjectId,
-    title: 'Основы алгебры',
-    description: 'Введение в алгебраические выражения и уравнения',
-    order: 1,
-  })
-
-  await addTopic({
-    id: topic2Id,
-    subjectId,
-    title: 'Основы геометрии',
-    description: 'Понимание форм, углов и пространственных отношений',
-    order: 2,
-  })
-
-  // Quizzes
-  const quiz1Id = uuidv4()
-  const quiz2Id = uuidv4()
-
-  await addQuiz({
-    id: quiz1Id,
-    title: 'Тест по основам алгебры',
-    questions: [
-      {
-        id: uuidv4(),
-        type: 'mcq',
-        question: 'Чему равно значение x в уравнении 2x + 5 = 13?',
-        options: ['3', '4', '5', '6'],
-        correctAnswer: '4',
-        explanation: 'Вычтем 5 из обеих частей: 2x = 8, затем разделим на 2: x = 4',
-      },
-      {
-        id: uuidv4(),
-        type: 'numeric',
-        question: 'Решите уравнение: 3y - 7 = 14',
-        correctAnswer: 7,
-        explanation: 'Прибавим 7 к обеим частям: 3y = 21, затем разделим на 3: y = 7',
-      },
-    ],
-  })
-
-  await addQuiz({
-    id: quiz2Id,
-    title: 'Тест по основам геометрии',
-    questions: [
-      {
-        id: uuidv4(),
-        type: 'mcq',
-        question: 'Чему равна сумма углов в треугольнике?',
-        options: ['90 градусов', '180 градусов', '270 градусов', '360 градусов'],
-        correctAnswer: '180 градусов',
-        explanation: 'Сумма всех внутренних углов в любом треугольнике всегда равна 180 градусам.',
-      },
-      {
-        id: uuidv4(),
-        type: 'numeric',
-        question: 'Чему равна площадь прямоугольника с длиной 8 и шириной 5?',
-        correctAnswer: 40,
-        explanation: 'Площадь = длина × ширина = 8 × 5 = 40',
-      },
-    ],
-  })
-
-  // Lessons
-  const lessons: Omit<Lesson, 'createdAt' | 'updatedAt'>[] = [
+  // Create 3 subjects: Maths, Physics, Chemistry
+  const subjects = [
     {
       id: uuidv4(),
-      topicId: topic1Id,
-      title: 'Введение в переменные',
-      content: `# Введение в переменные
-
-Переменные — это символы (обычно буквы), которые представляют неизвестные значения в математике. Они позволяют нам записывать общие правила и решать задачи.
-
-## Что такое переменная?
-
-Переменная — это буква или символ, который обозначает число. Часто используемые переменные:
-- **x** — часто используется для неизвестных значений
-- **y** — часто используется для зависимых переменных
-- **a, b, c** — часто используются для констант или параметров
-
-## Примеры
-
-Если мы скажем x = 5, то:
-- x + 3 = 8
-- 2x = 10
-- x² = 25
-
-## Практика
-
-Попробуйте решить: Если y = 7, чему равно y + 4?
-
-Ответ: 11, потому что 7 + 4 = 11.`,
-      order: 1,
+      title: 'Matematika',
+      description: 'Matematikanyň dürli synplary boýunça dersler we testler.',
     },
     {
       id: uuidv4(),
-      topicId: topic1Id,
-      title: 'Решение линейных уравнений',
-      content: `# Решение линейных уравнений
-
-Линейные уравнения — это уравнения, в которых наивысшая степень переменной равна 1.
-
-## Шаги решения
-
-1. **Упростите обе части** — объедините подобные члены
-2. **Изолируйте переменную** — используйте обратные операции
-3. **Проверьте ответ** — подставьте обратно в исходное уравнение
-
-## Пример
-
-Решите: 3x + 2 = 11
-
-1. Вычтем 2 из обеих частей: 3x = 9
-2. Разделим обе части на 3: x = 3
-3. Проверка: 3(3) + 2 = 9 + 2 = 11 ✓
-
-## Задачи для практики
-
-Попробуйте решить:
-- 2x - 5 = 7
-- 4x + 3 = 15
-- x/2 + 1 = 5`,
-      order: 2,
-      quizId: quiz1Id,
+      title: 'Fizika',
+      description: 'Fizikanyň dürli synplary boýunça dersler we testler.',
     },
     {
       id: uuidv4(),
-      topicId: topic1Id,
-      title: 'Работа с выражениями',
-      content: `# Работа с выражениями
-
-Выражение — это комбинация чисел, переменных и операций.
-
-## Типы выражений
-
-- **Числовое**: 5 + 3
-- **Алгебраическое**: x + 3
-- **Многочлен**: x² + 2x + 1
-
-## Упрощение выражений
-
-Объедините подобные члены:
-- 3x + 2x = 5x
-- 4y - y = 3y
-- 2a + 3b + a = 3a + 3b
-
-## Вычисление выражений
-
-Подставьте значения вместо переменных:
-- Если x = 4, то 2x + 3 = 2(4) + 3 = 11`,
-      order: 3,
-    },
-    {
-      id: uuidv4(),
-      topicId: topic2Id,
-      title: 'Введение в геометрические фигуры',
-      content: `# Введение в геометрические фигуры
-
-Геометрия — это изучение форм, размеров и свойств пространства.
-
-## Основные фигуры
-
-### Треугольники
-- 3 стороны
-- 3 угла
-- Сумма углов: 180°
-
-### Прямоугольники
-- 4 стороны
-- 4 прямых угла
-- Противоположные стороны равны
-
-### Круги
-- Все точки равноудалены от центра
-- Радиус: расстояние от центра до края
-- Диаметр: удвоенный радиус
-
-## Свойства
-
-Каждая фигура имеет уникальные свойства, которые помогают нам понимать и работать с ними.`,
-      order: 1,
-    },
-    {
-      id: uuidv4(),
-      topicId: topic2Id,
-      title: 'Площадь и периметр',
-      content: `# Площадь и периметр
-
-Понимание того, как вычислять площадь и периметр, необходимо в геометрии.
-
-## Периметр
-
-Периметр — это расстояние вокруг фигуры.
-
-- **Прямоугольник**: P = 2(длина + ширина)
-- **Квадрат**: P = 4 × сторона
-- **Треугольник**: P = сторона1 + сторона2 + сторона3
-
-## Площадь
-
-Площадь — это пространство внутри фигуры.
-
-- **Прямоугольник**: A = длина × ширина
-- **Квадрат**: A = сторона²
-- **Треугольник**: A = ½ × основание × высота
-- **Круг**: A = π × радиус²
-
-## Примеры
-
-Прямоугольник с длиной 6 и шириной 4:
-- Периметр: 2(6 + 4) = 20 единиц
-- Площадь: 6 × 4 = 24 квадратных единицы`,
-      order: 2,
-      quizId: quiz2Id,
+      title: 'Himiýa',
+      description: 'Himiýanyň dürli synplary boýunça dersler we testler.',
     },
   ]
 
-  for (const lesson of lessons) {
-    await addLesson(lesson)
+  const grades = [7, 8, 9, 10, 11, 12]
+  const gradeNames = {
+    7: '7-nji synp',
+    8: '8-nji synp',
+    9: '9-njy synp',
+    10: '10-njy synp',
+    11: '11-nji synp',
+    12: '12-nji synp',
+  }
+
+  // Curriculum for each subject and grade
+  const curriculum: Record<string, Record<number, string[]>> = {
+    Matematika: {
+      7: ['Arifmetikanyň esaslary', 'Droby bilen işlemek', 'Deňlemeleri çözmek', 'Geometriýanyň esasy figuralary'],
+      8: ['Algebrýa aňlatmalary', 'Köplenç bölünişikler', 'Funksiýalar bilen tanyşmak', 'Geometriýa we ölçegler'],
+      9: ['Kwadrat deňlemeler', 'Trigonometriýa esaslary', 'Funksiýalar we grafikler', 'Geometriýa we meýdançylyk'],
+      10: ['Logarifmler', 'Trigonometrik funksiýalar', 'Deriwatiwlar', 'Integrallar'],
+      11: ['Deriwatiwlar we ulanylyşy', 'Integrallar we ulanylyşy', 'Kompleks sanlar', 'Ehtimallyk teoriýasy'],
+      12: ['Matematik analiz', 'Differensial deňlemeler', 'Statistika', 'Matematik modellemek'],
+    },
+    Fizika: {
+      7: ['Mehanika esaslary', 'Güýç we hereket', 'Energiýa', 'Madda we onuň häsiýetleri'],
+      8: ['Elektrik we magnitizm', 'Elektrik zynjyry', 'Dolandyryşy we tolgundyryşy', 'Atom fizikasy'],
+      9: ['Termodinamika', 'Dolandyryşy we tolgundyryşy', 'Atom we ýadro fizikasy', 'Elektromagnit tolkunlar'],
+      10: ['Mehanika we termodinamika', 'Elektromagnitizm', 'Optika', 'Atom fizikasy'],
+      11: ['Kwant fizikasy', 'Relatiwistik fizika', 'Ýadro fizikasy', 'Fizikanyň täze ugurlary'],
+      12: ['Kwant mehanika', 'Fizikanyň teoriýalary', 'Kosmologiýa', 'Fizikanyň täze açylyşlary'],
+    },
+    Himiýa: {
+      7: ['Himiýanyň esaslary', 'Maddalaryň gurluşy', 'Himiýa elementleri', 'Himiýa reaksiýalary'],
+      8: ['Periodik sistema', 'Himiýa baglanyşyklary', 'Molekulýar gurluş', 'Himiýa reaksiýalary we deňlemeler'],
+      9: ['Organiki himiýa esaslary', 'Karbon birikmeleri', 'Himiýa reaksiýalary mehanizmi', 'Himiýa we durmuş'],
+      10: ['Organiki birikmeler', 'Biologiýa himiýasy', 'Himiýa we ekologiýa', 'Himiýa we senagat'],
+      11: ['Fiziki himiýa', 'Elektrohimiýa', 'Kolloid himiýa', 'Himiýa analiz'],
+      12: ['Himiýanyň teoriýalary', 'Kwant himiýasy', 'Himiýa we energetika', 'Himiýanyň täze ugurlary'],
+    },
+  }
+
+  // Create subjects and topics with curriculum
+  for (const subject of subjects) {
+    await addSubject(subject)
+
+    // Create topics for each grade (7-12)
+    const topics: { id: string; subjectId: string; title: string; order: number }[] = []
+    for (let i = 0; i < grades.length; i++) {
+      const grade = grades[i]
+      const topicId = uuidv4()
+      await addTopic({
+        id: topicId,
+        subjectId: subject.id,
+        title: gradeNames[grade as keyof typeof gradeNames],
+        description: `${subject.title} üçin ${gradeNames[grade as keyof typeof gradeNames]} okuw meýilnamasy`,
+        order: i + 1,
+      })
+      topics.push({
+        id: topicId,
+        subjectId: subject.id,
+        title: gradeNames[grade as keyof typeof gradeNames],
+        order: i + 1,
+      })
+    }
+
+    // Create curriculum lessons for each topic/grade
+    for (const topic of topics) {
+      const gradeNum = grades[topics.indexOf(topic)]
+      const curriculumTopics = curriculum[subject.title]?.[gradeNum] || []
+      
+      // Create lessons for each curriculum topic
+      for (let i = 0; i < curriculumTopics.length; i++) {
+        const curriculumTopic = curriculumTopics[i]
+        const lessonId = uuidv4()
+        
+        const lessonContent = `# ${curriculumTopic}
+
+Bu ${topic.title} üçin ${subject.title} okuw meýilnamasyndan "${curriculumTopic}" temasy.
+
+## Okuw maksady
+
+Bu temany öwrenmek bilen okuwçylar:
+
+- ${curriculumTopic} barada esasy düşünjeleri öwrenerler
+- Mysallar we amaly işler bilen tanyşarlar
+- Bu temanyň täze bilimlerini özleşdirerler
+
+## Ders mazmuny
+
+Bu ýerde ${curriculumTopic} temasy barada jikme-jik maglumatlar we dersler bolmaly.
+
+## Mysallar we amaly işler
+
+- Mysal 1: ...
+- Mysal 2: ...
+- Mysal 3: ...
+
+## Jemi
+
+Bu temany öwrenmek ${topic.title} üçin möhümdir we indiki temalara geçmek üçin esasy döredýär.`
+
+        await addLesson({
+          id: lessonId,
+          topicId: topic.id,
+          title: curriculumTopic,
+          content: lessonContent,
+          order: i + 1,
+        })
+      }
+    }
   }
 }
-

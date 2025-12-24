@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { recordEvent, getLessonProgress, getLocalUserId } from '@/lib/db'
 import { QuizComponent } from '@/components/Quiz'
 import type { Lesson, Topic, Quiz } from '@/lib/types'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface LessonClientProps {
   lesson: Lesson
@@ -14,6 +15,7 @@ interface LessonClientProps {
 }
 
 export default function LessonClient({ lesson, topic }: LessonClientProps) {
+  const { t } = useLanguage()
   const [progress, setProgress] = useState<number>(0)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [showQuiz, setShowQuiz] = useState(false)
@@ -69,13 +71,13 @@ export default function LessonClient({ lesson, topic }: LessonClientProps) {
         href={topic ? `/topic/${topic.subjectId}` : '/subjects'}
         className="text-sm text-apple-blue hover:opacity-80 mb-6 inline-block font-medium"
       >
-        ← Назад
+        {t.lesson.back}
       </Link>
       <h1 className="text-5xl font-semibold text-apple-gray-900 mb-4 tracking-tight">
         {lesson.title}
       </h1>
       {topic && (
-        <p className="text-sm text-apple-gray-600 mb-8">Тема: {topic.title}</p>
+        <p className="text-sm text-apple-gray-600 mb-8">{t.lesson.topic}: {topic.title}</p>
       )}
 
       <div className="bg-apple-gray-50 rounded-2xl p-8 mb-6 border border-apple-gray-100">
@@ -91,20 +93,20 @@ export default function LessonClient({ lesson, topic }: LessonClientProps) {
           onClick={handleComplete}
           className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm mb-6"
         >
-          Отметить как завершенное
+          {t.lesson.markComplete}
         </button>
       )}
 
       {progress === 100 && !showQuiz && quiz && (
         <div className="bg-apple-gray-50 rounded-2xl p-6 mb-6 border border-apple-gray-100">
           <h2 className="text-2xl font-semibold text-apple-gray-900 mb-4 tracking-tight">
-            Тест
+            {t.lesson.quiz}
           </h2>
           <button
             onClick={() => setShowQuiz(true)}
             className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm"
           >
-            Начать тест
+            {t.lesson.startQuiz}
           </button>
         </div>
       )}
