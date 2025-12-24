@@ -20,7 +20,7 @@ export default function SubjectsClient() {
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <h1 className="text-5xl font-semibold text-apple-gray-900 mb-12 tracking-tight">
-          Subjects
+          Предметы
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,7 +44,7 @@ export default function SubjectsClient() {
 
         {subjects.length === 0 && (
           <div className="bg-apple-gray-50 rounded-2xl p-12 text-center border border-apple-gray-100">
-            <p className="text-apple-gray-600">No subjects available yet.</p>
+            <p className="text-apple-gray-600">Предметы пока недоступны.</p>
           </div>
         )}
       </div>

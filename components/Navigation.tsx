@@ -18,19 +18,19 @@ export function Navigation() {
               href="/"
               className="text-sm text-apple-gray-600 hover:text-apple-gray-900 transition-colors font-medium"
             >
-              Home
+              Главная
             </Link>
             <Link
               href="/subjects"
               className="text-sm text-apple-gray-600 hover:text-apple-gray-900 transition-colors font-medium"
             >
-              Subjects
+              Предметы
             </Link>
             <Link
               href="/admin"
               className="text-sm text-apple-gray-600 hover:text-apple-gray-900 transition-colors font-medium"
             >
-              Admin
+              Админ
             </Link>
           </div>
         </div>

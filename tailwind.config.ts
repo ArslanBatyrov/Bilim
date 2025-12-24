@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         apple: {
-          blue: '#007AFF',
+          blue: '#355E3B',
           gray: {
             50: '#F5F5F7',
             100: '#E8E8ED',

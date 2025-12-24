@@ -57,14 +57,14 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
     return (
       <div>
         <h2 className="text-2xl font-semibold text-apple-gray-900 mb-6 tracking-tight">
-          Quiz Results
+          Результаты теста
         </h2>
         <div className="mb-8">
           <p className="text-4xl font-semibold text-apple-gray-900 mb-2">
             {score}%
           </p>
           <p className="text-sm text-apple-gray-600">
-            You got {score >= 70 ? 'great' : score >= 50 ? 'good' : 'needs improvement'} results!
+            Вы получили {score >= 70 ? 'отличный' : score >= 50 ? 'хороший' : 'требует улучшения'} результат!
           </p>
         </div>
         <div className="space-y-3">
@@ -84,13 +84,13 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
                 }`}
               >
                 <p className="font-semibold text-apple-gray-900 mb-2 text-sm">
-                  Question {idx + 1}: {q.question}
+                  Вопрос {idx + 1}: {q.question}
                 </p>
                 <p className="text-xs text-apple-gray-600 mb-1">
-                  Your answer: {answer !== undefined ? String(answer) : 'Not answered'}
+                  Ваш ответ: {answer !== undefined ? String(answer) : 'Не отвечено'}
                 </p>
                 <p className="text-xs text-apple-gray-600 mb-1">
-                  Correct answer: {String(q.correctAnswer)}
+                  Правильный ответ: {String(q.correctAnswer)}
                 </p>
                 {q.explanation && (
                   <p className="text-xs text-apple-gray-700 mt-2 italic">
@@ -112,7 +112,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
       </h2>
       <div className="mb-6">
         <p className="text-xs text-apple-gray-600 mb-6">
-          Question {currentQuestion + 1} of {quiz.questions.length}
+          Вопрос {currentQuestion + 1} из {quiz.questions.length}
         </p>
         <p className="text-base font-medium text-apple-gray-900 mb-6 leading-relaxed">
           {question.question}
@@ -140,7 +140,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
             value={answers[question.id] || ''}
             onChange={(e) => handleAnswer(Number(e.target.value))}
             className="w-full px-4 py-3 bg-white border border-apple-gray-200 rounded-xl focus:ring-2 focus:ring-apple-blue focus:border-apple-blue outline-none text-sm"
-            placeholder="Enter your answer"
+            placeholder="Введите ваш ответ"
           />
         )}
       </div>
@@ -150,7 +150,7 @@ export function QuizComponent({ quiz, onComplete }: QuizComponentProps) {
         disabled={answers[question.id] === undefined}
         className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {currentQuestion < quiz.questions.length - 1 ? 'Next' : 'Submit Quiz'}
+        {currentQuestion < quiz.questions.length - 1 ? 'Далее' : 'Завершить тест'}
       </button>
     </div>
   )

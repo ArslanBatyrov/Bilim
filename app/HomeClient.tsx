@@ -29,7 +29,7 @@ export default function HomeClient() {
     <div className="min-h-screen bg-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <h1 className="text-5xl font-semibold text-apple-gray-900 mb-12 tracking-tight">
-          Welcome
+          Добро пожаловать
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
@@ -37,25 +37,25 @@ export default function HomeClient() {
             <p className="text-3xl font-semibold text-apple-gray-900 mb-1">
               {streak}
             </p>
-            <p className="text-sm text-apple-gray-600 font-medium">Day Streak</p>
+            <p className="text-sm text-apple-gray-600 font-medium">Серия дней</p>
           </div>
           <div className="bg-apple-gray-50 rounded-2xl p-6 border border-apple-gray-100">
             <p className="text-3xl font-semibold text-apple-gray-900 mb-1">
               {dailyGoal.completed}/{dailyGoal.target}
             </p>
-            <p className="text-sm text-apple-gray-600 font-medium">Daily Goal</p>
+            <p className="text-sm text-apple-gray-600 font-medium">Дневная цель</p>
           </div>
           <div className="bg-apple-gray-50 rounded-2xl p-6 border border-apple-gray-100">
             <p className="text-3xl font-semibold text-apple-gray-900 mb-1">
               {stats.lessonsCompleted}
             </p>
-            <p className="text-sm text-apple-gray-600 font-medium">Lessons Completed</p>
+            <p className="text-sm text-apple-gray-600 font-medium">Уроков завершено</p>
           </div>
         </div>
 
         <div className="mb-12">
           <h2 className="text-2xl font-semibold text-apple-gray-900 mb-6 tracking-tight">
-            Continue Learning
+            Продолжить обучение
           </h2>
           {stats.lastLesson ? (
             <Link
@@ -71,7 +71,7 @@ export default function HomeClient() {
             </Link>
           ) : (
             <div className="bg-apple-gray-50 rounded-2xl p-6 border border-apple-gray-100">
-              <p className="text-apple-gray-600">No lessons started yet</p>
+              <p className="text-apple-gray-600">Уроки еще не начаты</p>
             </div>
           )}
         </div>
@@ -80,7 +80,7 @@ export default function HomeClient() {
           href="/subjects"
           className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm"
         >
-          Browse Subjects
+          Просмотреть предметы
         </Link>
       </div>
     </div>

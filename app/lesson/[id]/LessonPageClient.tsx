@@ -25,7 +25,7 @@ export default function LessonPageClient({ lessonId }: { lessonId: string }) {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <p className="text-apple-gray-600">Lesson not found</p>
+          <p className="text-apple-gray-600">Урок не найден</p>
         </div>
       </div>
     )

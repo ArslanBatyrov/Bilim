@@ -4,16 +4,47 @@ import {
   addTopic,
   addLesson,
   addQuiz,
+  getAllSubjects,
+  db,
 } from './db'
 import type { Subject, Topic, Lesson, Quiz } from './types'
 
 export async function seedDemoContent(): Promise<void> {
+  // Check if "Основы математики" already exists (handle duplicates)
+  const existingSubjects = await getAllSubjects()
+  const mathSubjects = existingSubjects.filter(s => s.title === 'Основы математики')
+  
+  // Delete all existing "Mathematics Fundamentals" subjects and their content
+  for (const mathSubject of mathSubjects) {
+    const existingTopics = await db.topics.where('subjectId').equals(mathSubject.id).toArray()
+    const topicIds = existingTopics.map(t => t.id)
+    
+    // Delete lessons and their quizzes
+    for (const topicId of topicIds) {
+      const lessons = await db.lessons.where('topicId').equals(topicId).toArray()
+      for (const lesson of lessons) {
+        await db.lessons.delete(lesson.id)
+        if (lesson.quizId) {
+          await db.quizzes.delete(lesson.quizId)
+        }
+      }
+    }
+    
+    // Delete topics
+    for (const topic of existingTopics) {
+      await db.topics.delete(topic.id)
+    }
+    
+    // Delete subject
+    await db.subjects.delete(mathSubject.id)
+  }
+
   // Subject
   const subjectId = uuidv4()
   await addSubject({
     id: subjectId,
-    title: 'Mathematics Fundamentals',
-    description: 'Learn the basics of mathematics including algebra, geometry, and arithmetic.',
+    title: 'Основы математики',
+    description: 'Изучите основы математики, включая алгебру, геометрию и арифметику.',
   })
 
   // Topics
@@ -23,16 +54,16 @@ export async function seedDemoContent(): Promise<void> {
   await addTopic({
     id: topic1Id,
     subjectId,
-    title: 'Algebra Basics',
-    description: 'Introduction to algebraic expressions and equations',
+    title: 'Основы алгебры',
+    description: 'Введение в алгебраические выражения и уравнения',
     order: 1,
   })
 
   await addTopic({
     id: topic2Id,
     subjectId,
-    title: 'Geometry Fundamentals',
-    description: 'Understanding shapes, angles, and spatial relationships',
+    title: 'Основы геометрии',
+    description: 'Понимание форм, углов и пространственных отношений',
     order: 2,
   })
 
@@ -42,44 +73,44 @@ export async function seedDemoContent(): Promise<void> {
 
   await addQuiz({
     id: quiz1Id,
-    title: 'Algebra Basics Quiz',
+    title: 'Тест по основам алгебры',
     questions: [
       {
         id: uuidv4(),
         type: 'mcq',
-        question: 'What is the value of x in the equation 2x + 5 = 13?',
+        question: 'Чему равно значение x в уравнении 2x + 5 = 13?',
         options: ['3', '4', '5', '6'],
         correctAnswer: '4',
-        explanation: 'Subtract 5 from both sides: 2x = 8, then divide by 2: x = 4',
+        explanation: 'Вычтем 5 из обеих частей: 2x = 8, затем разделим на 2: x = 4',
       },
       {
         id: uuidv4(),
         type: 'numeric',
-        question: 'Solve for y: 3y - 7 = 14',
+        question: 'Решите уравнение: 3y - 7 = 14',
         correctAnswer: 7,
-        explanation: 'Add 7 to both sides: 3y = 21, then divide by 3: y = 7',
+        explanation: 'Прибавим 7 к обеим частям: 3y = 21, затем разделим на 3: y = 7',
       },
     ],
   })
 
   await addQuiz({
     id: quiz2Id,
-    title: 'Geometry Basics Quiz',
+    title: 'Тест по основам геометрии',
     questions: [
       {
         id: uuidv4(),
         type: 'mcq',
-        question: 'What is the sum of angles in a triangle?',
-        options: ['90 degrees', '180 degrees', '270 degrees', '360 degrees'],
-        correctAnswer: '180 degrees',
-        explanation: 'The sum of all interior angles in any triangle is always 180 degrees.',
+        question: 'Чему равна сумма углов в треугольнике?',
+        options: ['90 градусов', '180 градусов', '270 градусов', '360 градусов'],
+        correctAnswer: '180 градусов',
+        explanation: 'Сумма всех внутренних углов в любом треугольнике всегда равна 180 градусам.',
       },
       {
         id: uuidv4(),
         type: 'numeric',
-        question: 'What is the area of a rectangle with length 8 and width 5?',
+        question: 'Чему равна площадь прямоугольника с длиной 8 и шириной 5?',
         correctAnswer: 40,
-        explanation: 'Area = length × width = 8 × 5 = 40',
+        explanation: 'Площадь = длина × ширина = 8 × 5 = 40',
       },
     ],
   })
@@ -89,57 +120,57 @@ export async function seedDemoContent(): Promise<void> {
     {
       id: uuidv4(),
       topicId: topic1Id,
-      title: 'Introduction to Variables',
-      content: `# Introduction to Variables
+      title: 'Введение в переменные',
+      content: `# Введение в переменные
 
-Variables are symbols (usually letters) that represent unknown values in mathematics. They allow us to write general rules and solve problems.
+Переменные — это символы (обычно буквы), которые представляют неизвестные значения в математике. Они позволяют нам записывать общие правила и решать задачи.
 
-## What is a Variable?
+## Что такое переменная?
 
-A variable is a letter or symbol that stands for a number. Common variables include:
-- **x** - often used for unknown values
-- **y** - often used for dependent variables
-- **a, b, c** - often used for constants or parameters
+Переменная — это буква или символ, который обозначает число. Часто используемые переменные:
+- **x** — часто используется для неизвестных значений
+- **y** — часто используется для зависимых переменных
+- **a, b, c** — часто используются для констант или параметров
 
-## Examples
+## Примеры
 
-If we say x = 5, then:
+Если мы скажем x = 5, то:
 - x + 3 = 8
 - 2x = 10
 - x² = 25
 
-## Practice
+## Практика
 
-Try to solve: If y = 7, what is y + 4?
+Попробуйте решить: Если y = 7, чему равно y + 4?
 
-The answer is 11, because 7 + 4 = 11.`,
+Ответ: 11, потому что 7 + 4 = 11.`,
       order: 1,
     },
     {
       id: uuidv4(),
       topicId: topic1Id,
-      title: 'Solving Linear Equations',
-      content: `# Solving Linear Equations
+      title: 'Решение линейных уравнений',
+      content: `# Решение линейных уравнений
 
-Linear equations are equations where the highest power of the variable is 1.
+Линейные уравнения — это уравнения, в которых наивысшая степень переменной равна 1.
 
-## Steps to Solve
+## Шаги решения
 
-1. **Simplify both sides** - Combine like terms
-2. **Isolate the variable** - Use inverse operations
-3. **Check your answer** - Substitute back into the original equation
+1. **Упростите обе части** — объедините подобные члены
+2. **Изолируйте переменную** — используйте обратные операции
+3. **Проверьте ответ** — подставьте обратно в исходное уравнение
 
-## Example
+## Пример
 
-Solve: 3x + 2 = 11
+Решите: 3x + 2 = 11
 
-1. Subtract 2 from both sides: 3x = 9
-2. Divide both sides by 3: x = 3
-3. Check: 3(3) + 2 = 9 + 2 = 11 ✓
+1. Вычтем 2 из обеих частей: 3x = 9
+2. Разделим обе части на 3: x = 3
+3. Проверка: 3(3) + 2 = 9 + 2 = 11 ✓
 
-## Practice Problems
+## Задачи для практики
 
-Try solving these:
+Попробуйте решить:
 - 2x - 5 = 7
 - 4x + 3 = 15
 - x/2 + 1 = 5`,
@@ -149,90 +180,90 @@ Try solving these:
     {
       id: uuidv4(),
       topicId: topic1Id,
-      title: 'Working with Expressions',
-      content: `# Working with Expressions
+      title: 'Работа с выражениями',
+      content: `# Работа с выражениями
 
-An expression is a combination of numbers, variables, and operations.
+Выражение — это комбинация чисел, переменных и операций.
 
-## Types of Expressions
+## Типы выражений
 
-- **Numerical**: 5 + 3
-- **Algebraic**: x + 3
-- **Polynomial**: x² + 2x + 1
+- **Числовое**: 5 + 3
+- **Алгебраическое**: x + 3
+- **Многочлен**: x² + 2x + 1
 
-## Simplifying Expressions
+## Упрощение выражений
 
-Combine like terms:
+Объедините подобные члены:
 - 3x + 2x = 5x
 - 4y - y = 3y
 - 2a + 3b + a = 3a + 3b
 
-## Evaluating Expressions
+## Вычисление выражений
 
-Substitute values for variables:
-- If x = 4, then 2x + 3 = 2(4) + 3 = 11`,
+Подставьте значения вместо переменных:
+- Если x = 4, то 2x + 3 = 2(4) + 3 = 11`,
       order: 3,
     },
     {
       id: uuidv4(),
       topicId: topic2Id,
-      title: 'Introduction to Shapes',
-      content: `# Introduction to Shapes
+      title: 'Введение в геометрические фигуры',
+      content: `# Введение в геометрические фигуры
 
-Geometry is the study of shapes, sizes, and properties of space.
+Геометрия — это изучение форм, размеров и свойств пространства.
 
-## Basic Shapes
+## Основные фигуры
 
-### Triangles
-- 3 sides
-- 3 angles
-- Sum of angles: 180°
+### Треугольники
+- 3 стороны
+- 3 угла
+- Сумма углов: 180°
 
-### Rectangles
-- 4 sides
-- 4 right angles
-- Opposite sides equal
+### Прямоугольники
+- 4 стороны
+- 4 прямых угла
+- Противоположные стороны равны
 
-### Circles
-- All points equidistant from center
-- Radius: distance from center to edge
-- Diameter: twice the radius
+### Круги
+- Все точки равноудалены от центра
+- Радиус: расстояние от центра до края
+- Диаметр: удвоенный радиус
 
-## Properties
+## Свойства
 
-Each shape has unique properties that help us understand and work with them.`,
+Каждая фигура имеет уникальные свойства, которые помогают нам понимать и работать с ними.`,
       order: 1,
     },
     {
       id: uuidv4(),
       topicId: topic2Id,
-      title: 'Area and Perimeter',
-      content: `# Area and Perimeter
+      title: 'Площадь и периметр',
+      content: `# Площадь и периметр
 
-Understanding how to calculate area and perimeter is essential in geometry.
+Понимание того, как вычислять площадь и периметр, необходимо в геометрии.
 
-## Perimeter
+## Периметр
 
-Perimeter is the distance around a shape.
+Периметр — это расстояние вокруг фигуры.
 
-- **Rectangle**: P = 2(length + width)
-- **Square**: P = 4 × side
-- **Triangle**: P = side1 + side2 + side3
+- **Прямоугольник**: P = 2(длина + ширина)
+- **Квадрат**: P = 4 × сторона
+- **Треугольник**: P = сторона1 + сторона2 + сторона3
 
-## Area
+## Площадь
 
-Area is the space inside a shape.
+Площадь — это пространство внутри фигуры.
 
-- **Rectangle**: A = length × width
-- **Square**: A = side²
-- **Triangle**: A = ½ × base × height
-- **Circle**: A = π × radius²
+- **Прямоугольник**: A = длина × ширина
+- **Квадрат**: A = сторона²
+- **Треугольник**: A = ½ × основание × высота
+- **Круг**: A = π × радиус²
 
-## Examples
+## Примеры
 
-A rectangle with length 6 and width 4:
-- Perimeter: 2(6 + 4) = 20 units
-- Area: 6 × 4 = 24 square units`,
+Прямоугольник с длиной 6 и шириной 4:
+- Периметр: 2(6 + 4) = 20 единиц
+- Площадь: 6 × 4 = 24 квадратных единицы`,
       order: 2,
       quizId: quiz2Id,
     },

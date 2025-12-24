@@ -69,13 +69,13 @@ export default function LessonClient({ lesson, topic }: LessonClientProps) {
         href={topic ? `/topic/${topic.subjectId}` : '/subjects'}
         className="text-sm text-apple-blue hover:opacity-80 mb-6 inline-block font-medium"
       >
-        ← Back
+        ← Назад
       </Link>
       <h1 className="text-5xl font-semibold text-apple-gray-900 mb-4 tracking-tight">
         {lesson.title}
       </h1>
       {topic && (
-        <p className="text-sm text-apple-gray-600 mb-8">Topic: {topic.title}</p>
+        <p className="text-sm text-apple-gray-600 mb-8">Тема: {topic.title}</p>
       )}
 
       <div className="bg-apple-gray-50 rounded-2xl p-8 mb-6 border border-apple-gray-100">
@@ -91,20 +91,20 @@ export default function LessonClient({ lesson, topic }: LessonClientProps) {
           onClick={handleComplete}
           className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm mb-6"
         >
-          Mark as Complete
+          Отметить как завершенное
         </button>
       )}
 
       {progress === 100 && !showQuiz && quiz && (
         <div className="bg-apple-gray-50 rounded-2xl p-6 mb-6 border border-apple-gray-100">
           <h2 className="text-2xl font-semibold text-apple-gray-900 mb-4 tracking-tight">
-            Quiz
+            Тест
           </h2>
           <button
             onClick={() => setShowQuiz(true)}
             className="inline-flex items-center justify-center px-6 py-3 bg-apple-blue text-white rounded-xl hover:opacity-90 transition-opacity font-medium text-sm"
           >
-            Start Quiz
+            Начать тест
           </button>
         </div>
       )}

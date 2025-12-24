@@ -29,7 +29,7 @@ export default function TopicClient({ subjectId }: { subjectId: string }) {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <p className="text-apple-gray-600">Subject not found</p>
+          <p className="text-apple-gray-600">Предмет не найден</p>
         </div>
       </div>
     )
@@ -42,7 +42,7 @@ export default function TopicClient({ subjectId }: { subjectId: string }) {
           href="/subjects"
           className="text-sm text-apple-blue hover:opacity-80 mb-6 inline-block font-medium"
         >
-          ← Back to Subjects
+          ← Назад к предметам
         </Link>
         <h1 className="text-5xl font-semibold text-apple-gray-900 mb-12 tracking-tight">
           {subject.title}
@@ -78,7 +78,7 @@ export default function TopicClient({ subjectId }: { subjectId: string }) {
 
         {topics.length === 0 && (
           <div className="bg-apple-gray-50 rounded-2xl p-12 text-center border border-apple-gray-100">
-            <p className="text-apple-gray-600">No topics available yet.</p>
+            <p className="text-apple-gray-600">Темы пока недоступны.</p>
           </div>
         )}
       </div>
